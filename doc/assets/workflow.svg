@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="140" viewBox="0 0 720 140">
+  <rect width="720" height="140" rx="12" fill="#f5f6f3"/>
+  <g fill="#ffffff" stroke="#dce3d9"><rect x="28" y="34" width="184" height="72" rx="8"/><rect x="268" y="34" width="184" height="72" rx="8"/><rect x="508" y="34" width="184" height="72" rx="8"/></g>
+  <g fill="#3f6952" font-family="system-ui, sans-serif" font-size="17" text-anchor="middle"><text x="120" y="76">1. Select your files</text><text x="360" y="76">2. Render locally</text><text x="600" y="76">3. Read in peace</text></g>
+  <g fill="none" stroke="#99b19a" stroke-width="2"><path d="M225 70h28m-7-6 7 6-7 6"/><path d="M465 70h28m-7-6 7 6-7 6"/></g>
+</svg>

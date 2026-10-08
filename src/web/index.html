@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f8f9f6" />
+    <link rel="icon" href="/ui/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/ui/styles.css" />
+    <title>kendai-md</title>
+    <script type="module" src="/ui/client.js"></script>
+  </head>
+  <body>
+    <svg
+      class="icon-definitions"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <symbol id="icon-file" viewBox="0 0 24 24">
+        <path
+          d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z M14 3v6h6 M8 13h8 M8 17h5"
+        />
+      </symbol>
+      <symbol id="icon-folder" viewBox="0 0 24 24">
+        <path
+          d="M3 7V5a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"
+        />
+      </symbol>
+      <symbol id="icon-search" viewBox="0 0 24 24">
+        <circle cx="10.5" cy="10.5" r="6.5" />
+        <path d="m16 16 5 5" />
+      </symbol>
+      <symbol id="icon-arrow" viewBox="0 0 24 24">
+        <path d="M5 12h14m-6-6 6 6-6 6" />
+      </symbol>
+      <symbol id="icon-link" viewBox="0 0 24 24">
+        <path
+          d="m10 13 4-4 M8 16l-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0 M16 8l1-1a4 4 0 0 1 6 6l-4 4a4 4 0 0 1-6 0"
+          transform="translate(1 0) scale(.92)"
+        />
+      </symbol>
+      <symbol id="icon-sun" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4" />
+        <path
+          d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1 1m12 12 1 1M5 19l1-1M18 6l1-1"
+        />
+      </symbol>
+      <symbol id="icon-menu" viewBox="0 0 24 24">
+        <path d="M4 6h16M4 12h16M4 18h16" />
+      </symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24">
+        <path d="m5 12 4 4L19 6" />
+      </symbol>
+      <symbol id="icon-clock" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 2" />
+      </symbol>
+    </svg>
+    <a class="skip-link" href="#main">Skip to document</a>
+    <aside class="sidebar" id="sidebar" aria-label="Document navigation">
+      <a class="brand" href="/" aria-label="kendai-md home"
+        ><img
+          class="brand-mark"
+          src="/ui/kendai-mark.png"
+          alt=""
+          width="30"
+          height="30"
+        /><span>kendai-md</span
+        ><span class="local-badge">LOCAL</span></a
+      >
+      <div class="workspace-label eyebrow">Your workspace</div>
+      <div class="workspace">
+        <span class="workspace-icon"
+          ><svg class="icon"><use href="#icon-folder" /></svg
+        ></span>
+        <div>
+          <strong id="project">Workspace</strong
+          ><span id="target-count">Local documents</span>
+        </div>
+      </div>
+      <div class="search-box">
+        <svg class="icon"><use href="#icon-search" /></svg
+        ><input
+          id="search"
+          type="search"
+          placeholder="Find a document…"
+          aria-label="Find a document"
+          autocomplete="off"
+        /><kbd>/</kbd>
+      </div>
+      <div class="files-heading">
+        <span class="eyebrow">Documents</span
+        ><span id="file-count" class="count">0</span>
+      </div>
+      <nav id="files" class="file-list" aria-label="Files"></nav>
+      <div class="sidebar-footer">
+        <div class="connection">
+          <span class="status-dot" id="status-dot"></span
+          ><span id="connection" role="status">Connecting…</span>
+        </div>
+        <span class="sidebar-caption">Your docs. A little more readable.</span>
+      </div>
+    </aside>
+    <button
+      id="overlay"
+      class="overlay"
+      aria-label="Close document navigation"
+      hidden
+    ></button>
+    <div class="shell">
+      <header class="toolbar">
+        <button
+          class="icon-button menu-button"
+          id="menu"
+          aria-label="Toggle document navigation"
+          aria-controls="sidebar"
+          aria-expanded="false"
+        >
+          <svg class="icon"><use href="#icon-menu" /></svg>
+        </button>
+        <div class="breadcrumb">
+          <svg class="icon"><use href="#icon-folder" /></svg
+          ><span id="breadcrumb-project">Workspace</span
+          ><span class="separator">/</span
+          ><span id="breadcrumb-file">Documents</span>
+        </div>
+        <div class="toolbar-actions">
+          <button id="copy-link" class="text-button">
+            <svg class="icon"><use href="#icon-link" /></svg
+            ><span>Copy link</span></button
+          ><span class="toolbar-divider"></span
+          ><button
+            id="theme"
+            class="icon-button"
+            aria-label="Switch to dark theme"
+            title="Switch theme"
+          >
+            <svg class="icon"><use href="#icon-sun" /></svg>
+          </button>
+        </div>
+      </header>
+      <main id="main" tabindex="-1">
+        <div class="reading-layout">
+          <div class="document-column">
+            <div class="document-meta" id="document-meta" hidden>
+              <span class="eyebrow document-category">Documentation</span
+              ><span class="reading-time"
+                ><svg class="icon"><use href="#icon-clock" /></svg
+                ><span id="reading-time"></span
+              ></span>
+            </div>
+            <article
+              id="content"
+              class="markdown"
+              aria-label="Rendered Markdown"
+              aria-busy="true"
+            >
+              <div class="empty-state">
+                <img
+                  class="empty-mark"
+                  src="/ui/kendai-mark.png"
+                  alt=""
+                  width="46"
+                  height="46"
+                />
+                <h1>Opening your workspace</h1>
+                <p>Your documents will be here in a moment.</p>
+              </div>
+            </article>
+            <div class="document-end" id="document-end" hidden>
+              <span class="end-rule"></span
+              ><svg class="icon"><use href="#icon-check" /></svg
+              ><span>You're all caught up.</span><span class="end-rule"></span>
+            </div>
+            <nav
+              id="pagination"
+              class="pagination"
+              aria-label="Adjacent documents"
+            ></nav>
+            <footer class="page-footer">
+              <span>Made for the joy of reading.</span
+              ><span>Markdown, at home.</span>
+            </footer>
+          </div>
+          <aside class="outline" id="outline" aria-label="Table of contents">
+            <span class="eyebrow">On this page</span>
+            <nav id="toc"></nav>
+            <div class="outline-note">
+              <span class="status-dot"></span>Changes appear as you save.
+            </div>
+            <button id="back-top" class="back-top">
+              Back to top <span>↑</span>
+            </button>
+          </aside>
+        </div>
+      </main>
+    </div>
+    <div class="toast" id="toast" role="status" hidden></div>
+  </body>
+</html>

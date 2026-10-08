@@ -1,0 +1,15 @@
+node_modules/
+dist/
+*.tgz
+.DS_Store
+coverage/
+.playwright-mcp/
+
+# VSCode Project file
+*.code-workspace
+
+# VSCode settings file
+.vscode
+
+# Local Memo
+Memo/
