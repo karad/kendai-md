@@ -3,8 +3,9 @@
 1. Confirm that you can publish the `kendai-md` name on npm. An unscoped name must be available or owned by your account; GitHub ownership does not reserve it.
 2. Sign in with `npm login` and confirm the account with `npm whoami`. Interactive publishing requires two-factor authentication; make sure you can complete the verification prompt.
 3. For later releases, update the version in `package.json` and `package-lock.json` (for example, `npm version patch`). npm does not allow reusing a published version.
-4. Run `npm publish --dry-run` to run the release checks and inspect the package contents without uploading. A successful dry run validates the local package; it does not confirm package-name availability, account permissions, or registry acceptance.
-5. Run `npm publish` to publish the release. Complete npm's authentication prompts when requested.
+4. Run `npm run check` and `npm run test:package` explicitly to verify the source and packaged CLI. Do not rely on a publish dry run to execute these checks.
+5. Run `npm publish --dry-run` to inspect the package contents without uploading. A successful dry run does not confirm package-name availability, account permissions, or registry acceptance.
+6. Run `npm publish` to publish the release. Complete npm's authentication prompts when requested.
 
 `prepublishOnly` runs the full checks and the packaged CLI smoke test before publishing. `prepare` builds the CLI and browser assets for local installation, packing, and GitHub installation. Only compiled files, documentation, package metadata, and the license are shipped.
 

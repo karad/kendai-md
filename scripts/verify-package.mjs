@@ -230,7 +230,7 @@ try {
       assert.ok(body.length > 0);
       if (route === '/') {
         assert.match(body, /<title>kendai-md<\/title>/);
-        assert.match(body, /aria-label="kendai-md home"/);
+        assert.match(body, /id="workspace-home"/);
       }
     }
     const home = library.documents.find((entry) => entry.name === 'README.md');

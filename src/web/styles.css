@@ -1,17 +1,20 @@
 :root {
   color-scheme: light;
   --bg: #fff;
-  --sidebar: #f8f9f6;
-  --surface: #f5f6f3;
-  --hover: #eef0eb;
-  --text: #272d2a;
-  --muted: #7b837d;
-  --soft: #a0a69f;
-  --border: #e8ebe4;
-  --green: #3f6952;
-  --green-soft: #e8efe7;
-  --code: #f7f8f5;
-  --shadow: 0 8px 40px #24312412;
+  --sidebar: #fafafa;
+  --surface: #f5f5f5;
+  --hover: #eeeeee;
+  --text: #171717;
+  --muted: #737373;
+  --soft: #a3a3a3;
+  --border: #e5e5e5;
+  --accent: #000000;
+  --accent-soft: #ededed;
+  --code: #fafafa;
+  --syntax-keyword: #75647d;
+  --syntax-string: #58715e;
+  --syntax-value: #82694f;
+  --shadow: 0 8px 40px #00000012;
   --sidebar-width: 270px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 14px;
@@ -20,17 +23,20 @@
 }
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --bg: #191e1b;
-  --sidebar: #151a17;
-  --surface: #222823;
-  --hover: #2a332c;
-  --text: #dfe6de;
-  --muted: #99a79d;
-  --soft: #829087;
-  --border: #303931;
-  --green: #a0c3a7;
-  --green-soft: #2a3a2d;
-  --code: #202722;
+  --bg: #171717;
+  --sidebar: #121212;
+  --surface: #222222;
+  --hover: #2b2b2b;
+  --text: #f5f5f5;
+  --muted: #a3a3a3;
+  --soft: #8a8a8a;
+  --border: #333333;
+  --accent: #ffffff;
+  --accent-soft: #303030;
+  --code: #202020;
+  --syntax-keyword: #b5a4bd;
+  --syntax-string: #a0b2a4;
+  --syntax-value: #bca68d;
   --shadow: 0 8px 40px #0004;
 }
 * {
@@ -70,7 +76,7 @@ input {
   outline-offset: 4px;
 }
 :focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--accent);
 }
 [hidden] {
   display: none !important;
@@ -131,25 +137,11 @@ input {
   font-weight: 700;
   flex: none;
 }
-.brand-mark {
-  display: block;
-  object-fit: contain;
-  flex: none;
-  height: 30px;
-  width: 30px;
-}
-.brand-dot {
-  color: var(--green);
-}
-.local-badge {
-  font-size: 8px;
-  letter-spacing: 1px;
-  color: var(--muted);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 2px 5px;
-  margin-left: auto;
-  font-weight: 500;
+.brand-project {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .workspace-label {
   margin: 12px 10px 10px;
@@ -172,7 +164,7 @@ input {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 6px;
-  color: var(--green);
+  color: var(--accent);
 }
 .workspace > div {
   min-width: 0;
@@ -216,7 +208,7 @@ input {
   font-size: 11px;
 }
 .search-box:focus-within {
-  border-color: var(--green);
+  border-color: var(--accent);
 }
 input::placeholder {
   color: var(--muted);
@@ -279,8 +271,8 @@ kbd {
   color: var(--text);
 }
 .file-link[aria-current='page'] {
-  background: var(--green-soft);
-  color: var(--green);
+  background: var(--accent-soft);
+  color: var(--accent);
   font-weight: 600;
 }
 .file-link[aria-current='page']::after {
@@ -288,7 +280,7 @@ kbd {
   height: 5px;
   width: 5px;
   border-radius: 50%;
-  background: var(--green);
+  background: var(--accent);
   margin-left: auto;
   flex: none;
 }
@@ -326,14 +318,14 @@ kbd {
 }
 .status-dot {
   display: inline-block;
-  background: #759775;
+  background: var(--accent);
   width: 6px;
   height: 6px;
   border-radius: 50%;
   flex: none;
 }
 .status-dot.disconnected {
-  background: #bb8748;
+  background: var(--muted);
 }
 .sidebar-caption {
   display: block;
@@ -398,7 +390,7 @@ kbd {
 }
 .text-button:hover,
 .icon-button:hover {
-  color: var(--green);
+  color: var(--accent);
 }
 .toolbar-divider {
   height: 16px;
@@ -434,7 +426,7 @@ kbd {
   margin-bottom: 25px;
 }
 .document-category {
-  color: var(--green);
+  color: var(--accent);
   font-size: 9px;
   letter-spacing: 1.6px;
 }
@@ -479,8 +471,8 @@ kbd {
   color: var(--text);
 }
 #toc a[aria-current='location'] {
-  color: var(--green);
-  border-left-color: var(--green);
+  color: var(--accent);
+  border-left-color: var(--accent);
   font-weight: 550;
 }
 #toc a.toc-nested {
@@ -511,7 +503,7 @@ kbd {
   margin-left: 9px;
 }
 .back-top:hover {
-  color: var(--green);
+  color: var(--accent);
 }
 .markdown {
   font-size: 14px;
@@ -566,12 +558,12 @@ kbd {
   margin-bottom: 29px;
 }
 .markdown a {
-  color: var(--green);
-  text-decoration-color: color-mix(in srgb, var(--green) 40%, transparent);
+  color: var(--accent);
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
   text-underline-offset: 3px;
 }
 .markdown a:hover {
-  text-decoration-color: var(--green);
+  text-decoration-color: var(--accent);
 }
 .markdown a:not([href]) {
   color: var(--muted);
@@ -596,7 +588,7 @@ kbd {
   position: relative;
 }
 .markdown input[type='checkbox'] {
-  accent-color: var(--green);
+  accent-color: var(--accent);
   margin-right: 7px;
   margin-left: -22px;
   vertical-align: middle;
@@ -608,7 +600,7 @@ kbd {
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 2px 5px;
-  color: var(--green);
+  color: var(--accent);
 }
 .code-block {
   border: 1px solid var(--border);
@@ -660,7 +652,7 @@ kbd {
   overflow-wrap: normal;
 }
 .markdown blockquote {
-  border-left: 3px solid #99b19a;
+  border-left: 3px solid var(--accent);
   background: var(--sidebar);
   padding: 10px 20px;
   margin: 23px 0;
@@ -732,11 +724,11 @@ kbd {
 .markdown .hljs-keyword,
 .markdown .hljs-selector-tag,
 .markdown .hljs-literal {
-  color: #8c6196;
+  color: var(--syntax-keyword);
 }
 .markdown .hljs-string,
 .markdown .hljs-attr {
-  color: #54815c;
+  color: var(--syntax-string);
 }
 .markdown .hljs-comment {
   color: var(--muted);
@@ -745,13 +737,7 @@ kbd {
 .markdown .hljs-title,
 .markdown .hljs-number,
 .markdown .hljs-built_in {
-  color: #b17b47;
-}
-:root[data-theme='dark'] .markdown .hljs-keyword {
-  color: #c39dcd;
-}
-:root[data-theme='dark'] .markdown .hljs-string {
-  color: #9ebc88;
+  color: var(--syntax-value);
 }
 .document-end {
   display: flex;
@@ -765,7 +751,7 @@ kbd {
 .document-end .icon {
   width: 13px;
   height: 13px;
-  color: var(--green);
+  color: var(--accent);
 }
 .end-rule {
   height: 1px;
@@ -789,7 +775,7 @@ kbd {
   min-width: 0;
 }
 .page-link:hover {
-  border-color: var(--green);
+  border-color: var(--accent);
   background: var(--sidebar);
 }
 .page-link > span {
@@ -812,7 +798,7 @@ kbd {
 .page-link .icon {
   width: 15px;
   height: 15px;
-  color: var(--green);
+  color: var(--accent);
 }
 .previous .icon {
   transform: rotate(180deg);
@@ -976,7 +962,7 @@ kbd {
     display: block;
     position: fixed;
     inset: 0;
-    background: #18231b55;
+    background: #00000055;
     z-index: 25;
   }
   .toast {

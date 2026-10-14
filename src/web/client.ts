@@ -351,6 +351,12 @@ async function refresh() {
     const snapshot = await api<LibrarySnapshot>('/api/library');
     if (number !== libraryRequestNumber) return;
     library = snapshot;
+    element('brand-project').textContent = library.project;
+    element('brand-project').title = library.project;
+    element('workspace-home').setAttribute(
+      'aria-label',
+      `${library.project} home`,
+    );
     element('project').textContent = library.project;
     element('breadcrumb-project').textContent = library.project;
     element('target-count').textContent =

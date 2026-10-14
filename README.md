@@ -4,7 +4,7 @@ kendai-md is a simple, local Markdown viewer. Point it at files or directories t
 
 ## Getting started
 
-Requires **Node.js 22 or later**. After the package is published on npm, install it globally:
+Requires **Node.js 22 or later**. Install it globally from npm:
 
 ```bash
 npm install -g kendai-md
@@ -110,7 +110,7 @@ The package includes the `kendai` command and browser assets. Before publishing,
 
 ```bash
 cd /path/to/another-project
-npm exec --yes --package=/absolute/path/to/kendai-md-0.1.0.tgz -- kendai -t doc/ -t README.md
+npm exec --yes --package=/absolute/path/to/kendai-md-0.1.1.tgz -- kendai -t doc/ -t README.md
 ```
 
 ## Contributing
@@ -134,6 +134,8 @@ For bugs, include your operating system, Node.js version, kendai-md version, the
 ## Maintainer releases
 
 For manual installation testing, run `npm run install:local`. This removes the existing global `kendai-md` installation, runs `npm pack`, and installs the generated tarball globally using the active npm prefix. Stop any running kendai server first. If a step fails, later steps do not run; the previous installation may already have been removed. After testing, run `npm uninstall -g kendai-md`.
+
+See the [changelog](doc/changelog.md) for release changes.
 
 See the [npm publishing guide](doc/publishing.md) for release checks, authentication, publishing, and post-release verification.
 

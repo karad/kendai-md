@@ -31,7 +31,11 @@ test('HTTP serves selected documents, assets, and relative links with fixed stat
     (entry) => entry.name === 'my guide.md',
   )!;
   const page = await fetch(server.url);
-  assert.match(await page.text(), /Rendered Markdown/);
+  const pageHtml = await page.text();
+  assert.match(pageHtml, /Rendered Markdown/);
+  assert.match(pageHtml, /id="brand-project"/);
+  assert.match(pageHtml, /id="workspace-home"/);
+  assert.doesNotMatch(pageHtml, /class="local-badge"|class="brand-mark"/);
   assert.match(
     page.headers.get('content-security-policy')!,
     /script-src 'self'/,
