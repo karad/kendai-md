@@ -7,6 +7,7 @@ test('repeated short and long targets preserve caller order', () => {
     parseOptions(['-t', 'doc/', '--target', 'README.md', '-t', 'my notes.md']),
     {
       targets: ['doc/', 'README.md', 'my notes.md'],
+      tui: false,
       port: 0,
       open: true,
       watch: true,
@@ -71,4 +72,39 @@ test('help identifies the project and its CLI command', () => {
   assert.match(help, /^kendai-md —/);
   assert.match(help, /\n  kendai \[-t <path>/);
   assert.match(help, /\n  npx kendai-md\n/);
+});
+
+test('tui is explicit and accepts targets and no-watch', () => {
+  assert.equal(parseOptions([]).tui, false);
+  const options = parseOptions(['--tui', '-t', 'doc', '--no-watch']);
+  assert.equal(options.tui, true);
+  assert.deepEqual(options.targets, ['doc']);
+  assert.equal(options.watch, false);
+});
+for (const args of [['--port', '3000'], ['-p', '3000'], ['--no-open']]) {
+  test(`tui rejects browser-specific options: ${args.join(' ')}`, () => {
+    assert.throws(() => parseOptions(['--tui', ...args]), /cannot be combined/);
+  });
+}
+test('tui help and version take precedence over combination and target checks', () => {
+  assert.equal(
+    parseOptions(['--tui', '--no-open', '-t', '', '--help']).help,
+    true,
+  );
+  assert.equal(
+    parseOptions(['--tui', '--port', '3000', '--version']).version,
+    true,
+  );
+  assert.match(help, /--tui/);
+});
+
+test('uppercase T is equivalent to tui and does not conflict with target', () => {
+  assert.deepEqual(
+    parseOptions(['-T', '-t', 'doc/', '--no-watch']),
+    parseOptions(['--tui', '-t', 'doc/', '--no-watch']),
+  );
+  assert.match(help, /-T, --tui/);
+  assert.throws(() => parseOptions(['-T', '--no-open']), /cannot be combined/);
+  assert.throws(() => parseOptions(['-T', '-p', '3000']), /cannot be combined/);
+  assert.equal(parseOptions(['-T', '--no-open', '-h']).help, true);
 });

@@ -18,7 +18,17 @@ async function main() {
     console.log(pkg.version);
     return;
   }
+  if (options.tui && (!process.stdin.isTTY || !process.stdout.isTTY)) {
+    throw new Error(
+      '--tui requires an interactive terminal (stdin and stdout).',
+    );
+  }
   const library = await Library.create(options.targets);
+  if (options.tui) {
+    const { runTui } = await import('./tui/run.js');
+    await runTui(library, options.watch);
+    return;
+  }
   const server = await startServer(library, options.port, options.watch);
   const count = library.snapshot().documents.length;
   console.log(

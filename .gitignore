@@ -13,3 +13,9 @@ coverage/
 
 # Local Memo
 Memo/
+
+# SpecKit
+.specify/
+.agents/
+specs/
+docs/
