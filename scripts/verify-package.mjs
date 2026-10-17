@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { execFileSync, spawn } from 'node:child_process';
+import { execFileSync, spawn, spawnSync } from 'node:child_process';
 import { once } from 'node:events';
 import {
   mkdtemp,
@@ -9,6 +9,7 @@ import {
   rm,
   cp,
   access,
+  readdir,
 } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -158,6 +159,29 @@ try {
     metadata.bin.kendai,
   );
   const installedRoot = path.join(project, 'node_modules', metadata.name);
+  const packagedRoots = new Set([
+    'LICENSE',
+    'README.md',
+    'dist',
+    'doc',
+    'package.json',
+    'node_modules',
+  ]);
+  for (const entry of await readdir(installedRoot))
+    assert.ok(
+      packagedRoots.has(entry),
+      `Unexpected packaged source or metadata: ${entry}`,
+    );
+  for (const directory of ['dist', 'doc']) {
+    for (const entry of await readdir(path.join(installedRoot, directory), {
+      recursive: true,
+    })) {
+      assert.ok(
+        !/\.test\.[cm]?[jt]sx?$/.test(entry),
+        `Test leaked into package: ${entry}`,
+      );
+    }
+  }
   assert.match(
     await readFile(path.join(installedRoot, 'LICENSE'), 'utf8'),
     /MIT License/,
@@ -172,6 +196,98 @@ try {
     encoding: 'utf8',
   });
   assert.match(help, /^kendai-md —/);
+  assert.match(help, /--tui/);
+  for (const file of [
+    'tui/app.js',
+    'tui/run.js',
+    'tui/model.js',
+    'tui/text.js',
+    'tui/markdown.js',
+    'tui/table.js',
+    'tui/navigation.js',
+    'tui/session.js',
+    'tui/watch.js',
+    'tui/images.js',
+  ]) {
+    await access(path.join(installedRoot, 'dist', file));
+  }
+  const { renderTerminalMarkdown } = await import(
+    pathToFileURL(path.join(installedRoot, 'dist/tui/markdown.js')).href
+  );
+  const terminalMarkdown = renderTerminalMarkdown(
+    '# Heading\n\n[Guide](./doc/intro.md)',
+    54,
+  );
+  assert.deepEqual(
+    terminalMarkdown.targets.map((target) => target.kind),
+    ['heading', 'link'],
+  );
+  assert.ok(
+    terminalMarkdown.lines.some((line) => line.spans.some((span) => span.bold)),
+  );
+  const { Session } = await import(
+    pathToFileURL(path.join(installedRoot, 'dist/tui/session.js')).href
+  );
+  const { Library } = await import(
+    pathToFileURL(path.join(installedRoot, 'dist/library.js')).href
+  );
+  const session = new Session(await Library.create(['.'], project));
+  const home = session
+    .snapshot()
+    .entries.find((entry) => entry.name === 'README.md');
+  await session.open(home.id);
+  await session.follow('doc/intro.md#project-introduction');
+  assert.equal(session.snapshot().state.document.entry.name, 'intro.md');
+  await session.back();
+  assert.equal(session.snapshot().state.document.entry.id, home.id);
+  await session.forward();
+  assert.equal(session.snapshot().state.document.entry.name, 'intro.md');
+  session.beginSearch();
+  session.editSearch('introduction');
+  session.commitSearch();
+  assert.equal(session.snapshot().matches.length, 1);
+  session.dispose();
+  const imageLayout = renderTerminalMarkdown(
+    '![Workflow](./assets/workflow.svg)',
+    54,
+  );
+  assert.equal(imageLayout.targets[0].kind, 'image');
+  const imageRoot = path.join(installedRoot, 'doc');
+  const imageLibrary = await Library.create(['.'], imageRoot);
+  const openedImages = [];
+  const images = new Session(imageLibrary, async (file) => {
+    openedImages.push(file);
+  });
+  const imageDocument = imageLibrary
+    .snapshot()
+    .documents.find((entry) => entry.name === 'tui-sample.md');
+  await images.open(imageDocument.id);
+  const imageTarget = images
+    .snapshot()
+    .layout.targets.find((target) => target.kind === 'image');
+  while (images.snapshot().state.activeTarget !== imageTarget.id)
+    images.send({ type: 'tab' });
+  await images.activate();
+  assert.equal(openedImages.length, 1);
+  assert.equal(path.basename(openedImages[0]), 'workflow.svg');
+  images.dispose();
+  const table = renderTerminalMarkdown(
+    '| Name | Value |\n|---|---:|\n| 日本語 | 42 |',
+    54,
+  );
+  assert.ok(table.lines.some((line) => line.tableWidth > 0));
+  assert.ok(
+    table.lines.some((line) =>
+      line.spans.some((span) => span.text.includes('┌')),
+    ),
+  );
+  const terminal = spawnSync(process.execPath, [cli, '--tui', '-t', 'doc/'], {
+    cwd: project,
+    encoding: 'utf8',
+  });
+  assert.equal(terminal.status, 1);
+  assert.match(terminal.stderr, /requires an interactive terminal/);
+  assert.equal(terminal.stdout, '');
   assert.match(help, /kendai \[-t <path>/);
   for (const targets of [
     [],
@@ -244,7 +360,7 @@ try {
     assert.equal(code, 0, 'CLI shuts down cleanly');
   }
   console.log(
-    '\nPackage verified: global command, npm exec, Git source build, default and explicit caller-relative targets, bundled assets, rendering, and clean shutdown.',
+    '\nPackage verified: global command, npm exec, Git source build, default and explicit caller-relative targets, bundled assets, rendering, TUI help/non-interactive rejection, and clean shutdown.',
   );
 } finally {
   if (child && child.exitCode === null && child.signalCode === null) {

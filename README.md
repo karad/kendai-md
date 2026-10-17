@@ -4,7 +4,7 @@ kendai-md is a simple, local Markdown viewer. Point it at files or directories t
 
 ## Getting started
 
-Requires **Node.js 22 or later**. Install it globally from npm:
+Requires **Node.js 24.22.0 or later**. Install it globally from npm:
 
 ```bash
 npm install -g kendai-md
@@ -67,6 +67,7 @@ kendai --help
 | --------------------- | -------------------------------------------------------------- |
 | `-t, --target <path>` | Add a Markdown file or directory. Repeatable; defaults to `.`. |
 | `-p, --port <number>` | Choose a port. Defaults to an available port.                  |
+| `-T, --tui`           | Open the full-screen terminal reader.                          |
 | `--no-open`           | Start the server without opening the browser.                  |
 | `--no-watch`          | Disable file watching and automatic updates.                   |
 | `-h, --help`          | Show CLI help.                                                 |
@@ -118,7 +119,7 @@ npm exec --yes --package=/absolute/path/to/kendai-md-0.1.1.tgz -- kendai -t doc/
 Bug reports, documentation improvements, and focused pull requests are welcome. For a larger change, open an issue first to discuss the use case and scope.
 
 1. Fork this repository and clone your fork.
-2. Follow the development setup above using Node.js 22 or later and Git.
+2. Follow the development setup above using Node.js 24.22.0 or later and Git.
 3. Keep UI text, code comments, and identifiers in English.
 4. Add tests for changed behavior, especially file access boundaries, document rendering, and UI state decisions.
 5. Run `npm run check` and `npm run test:package` before opening a pull request. Include what changed and how you verified it.
@@ -135,10 +136,20 @@ For bugs, include your operating system, Node.js version, kendai-md version, the
 
 For manual installation testing, run `npm run install:local`. This removes the existing global `kendai-md` installation, runs `npm pack`, and installs the generated tarball globally using the active npm prefix. Stop any running kendai server first. If a step fails, later steps do not run; the previous installation may already have been removed. After testing, run `npm uninstall -g kendai-md`.
 
-See the [changelog](doc/changelog.md) for release changes.
+See [GitHub Releases](https://github.com/karad/kendai-md/releases) for release changes.
 
 See the [npm publishing guide](doc/publishing.md) for release checks, authentication, publishing, and post-release verification.
 
 ## License
 
 [MIT](LICENSE)
+
+## Terminal reader
+
+Use `kendai --tui` (or `kendai -T`) to browse local Markdown in a full-screen terminal. Left / Right scroll wide tables; `/` searches, `g` / `G` moves between matches, and `o` opens the heading list. Tab selects a link and Enter opens it; `<` / `>` moves back and forward. Document positions are remembered during the session, and file edits and list changes update automatically unless `--no-watch` is set. Node.js v24.22.0 or later and an interactive terminal are required.
+
+Tab / Shift+Tab also selects images. Enter on an allowed local image opens its OS default application while keeping your document and position. Remote images are not fetched, and inline terminal image rendering is not included.
+
+See [Terminal reader](doc/tui.md) for controls, target paths and current limitations. The default `kendai` command continues to open the browser reader.
+
+The terminal implementation and its checks use the root project; the earlier experiment has been retired. See [Terminal reader validation](doc/tui-validation.md) for the production PTY checks, reproducible 1,000-file / 10,000-line benchmark and OS-specific confirmation status.
