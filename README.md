@@ -39,18 +39,23 @@ Repeat `-t` to bring multiple files and directories into the same workspace.
 
 ## Features
 
+- **Read in your browser or terminal.** Use the browser reader by default, or launch the full-screen terminal reader with `--tui`.
 - **Bring documents together.** Combine directories and individual files in one workspace.
 - **Read rendered Markdown.** Syntax highlighting, tables, task lists, and a table of contents make documents easy to scan.
 - **Follow document links.** Navigate relative Markdown links and jump to headings.
 - **See changes as you save.** The viewer updates when files are edited, added, or deleted.
-- **Find files quickly.** Press `/` or `⌘K` / `Ctrl+K` to search by filename or path.
-- **Choose your theme.** Switch between light and dark themes.
+- **Find files quickly in the browser.** Press `/` or `⌘K` / `Ctrl+K` to search by filename or path.
+- **Navigate from the terminal.** Search within a document with `/`, jump to headings with `o`, and use `<` / `>` to move through navigation history. Reading positions are remembered during the session.
+- **Read wide tables and open local images in the terminal.** Scroll tables with Left / Right, or select a local image with Tab and press Enter to open it in its default application.
+- **Choose your browser theme.** Switch between light and dark themes.
 
 Directories are scanned recursively for `.md` and `.markdown` files. When `-t` is omitted, the current directory is the target. Hidden files and directories (including `.git`, `.cache`, and `.venv`), dependency directories (`node_modules`, `bower_components`, `vendor`, `venv`), and generated directories (`dist`, `build`, `coverage`, `__pycache__`) are excluded from discovery and watching. These exclusions apply at every depth. An excluded directory or file can still be selected explicitly with `-t`. Repeated targets and overlapping directories do not create duplicate entries. Symlinks found during directory scans are skipped; symlinks explicitly passed with `-t` are resolved when the CLI starts.
 
 ## CLI usage
 
 Paths are resolved from the directory where you run the command. Your documents stay where they are, and the original files are never modified.
+
+Run `kendai` for the browser reader or `kendai --tui` (`kendai -T`) for the terminal reader. Both support the same targets and file watching. The terminal reader requires interactive stdin and stdout and does not start an HTTP server; `--port` and `--no-open` cannot be combined with `--tui`.
 
 ```bash
 # Open Markdown throughout the current directory
@@ -59,25 +64,42 @@ kendai
 # Open several parts of a project
 kendai -t doc/ -t README.md -t AGENTS.md
 
+# Read Markdown in the terminal
+kendai --tui
+
+# Open selected documents in the terminal
+kendai -T -t doc/ -t README.md
+
 # Choose a port and open the browser yourself
 kendai -t doc/ --port 4321 --no-open
 
 # Read without automatic updates
 kendai --no-watch
+kendai --tui --no-watch
 
 # See every option
 kendai --help
 ```
 
-| Option                | Description                                                    |
-| --------------------- | -------------------------------------------------------------- |
-| `-t, --target <path>` | Add a Markdown file or directory. Repeatable; defaults to `.`. |
-| `-p, --port <number>` | Choose a port. Defaults to an available port.                  |
-| `-T, --tui`           | Open the full-screen terminal reader.                          |
-| `--no-open`           | Start the server without opening the browser.                  |
-| `--no-watch`          | Disable file watching and automatic updates.                   |
-| `-h, --help`          | Show CLI help.                                                 |
-| `-v, --version`       | Show the package version.                                      |
+| Option                | Description                                                                     |
+| --------------------- | ------------------------------------------------------------------------------- |
+| `-t, --target <path>` | Add a Markdown file or directory. Repeatable; defaults to `.`.                  |
+| `-p, --port <number>` | Choose a browser server port. Defaults to an available port; browser mode only. |
+| `-T, --tui`           | Open the full-screen terminal reader.                                           |
+| `--no-open`           | Start the server without opening the browser; browser mode only.                |
+| `--no-watch`          | Disable file watching and automatic updates.                                    |
+| `-h, --help`          | Show CLI help.                                                                  |
+| `-v, --version`       | Show the package version.                                                       |
+
+## Terminal reader
+
+Use `kendai --tui` (or `kendai -T`) to browse local Markdown in a full-screen terminal. Left / Right scroll wide tables; `/` searches, `g` / `G` moves between matches, and `o` opens the heading list. Tab selects a link and Enter opens it; `<` / `>` moves back and forward. Document positions are remembered during the session, and file edits and list changes update automatically unless `--no-watch` is set. Node.js v24.22.0 or later and an interactive terminal are required.
+
+Tab / Shift+Tab also selects images. Enter on an allowed local image opens its OS default application while keeping your document and position. Remote images are not fetched, and inline terminal image rendering is not included.
+
+See [Terminal reader](doc/tui.md) for controls, target paths and current limitations. The default `kendai` command continues to open the browser reader.
+
+The terminal implementation and its checks use the root project; the earlier experiment has been retired. See [Terminal reader validation](doc/tui-validation.md) for the production PTY checks, reproducible 1,000-file / 10,000-line benchmark and OS-specific confirmation status.
 
 ## Local by design
 
@@ -149,13 +171,3 @@ See the [npm publishing guide](doc/publishing.md) for release checks, authentica
 ## License
 
 [MIT](LICENSE)
-
-## Terminal reader
-
-Use `kendai --tui` (or `kendai -T`) to browse local Markdown in a full-screen terminal. Left / Right scroll wide tables; `/` searches, `g` / `G` moves between matches, and `o` opens the heading list. Tab selects a link and Enter opens it; `<` / `>` moves back and forward. Document positions are remembered during the session, and file edits and list changes update automatically unless `--no-watch` is set. Node.js v24.22.0 or later and an interactive terminal are required.
-
-Tab / Shift+Tab also selects images. Enter on an allowed local image opens its OS default application while keeping your document and position. Remote images are not fetched, and inline terminal image rendering is not included.
-
-See [Terminal reader](doc/tui.md) for controls, target paths and current limitations. The default `kendai` command continues to open the browser reader.
-
-The terminal implementation and its checks use the root project; the earlier experiment has been retired. See [Terminal reader validation](doc/tui-validation.md) for the production PTY checks, reproducible 1,000-file / 10,000-line benchmark and OS-specific confirmation status.
