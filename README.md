@@ -1,5 +1,9 @@
 # kendai-md — A quick look at your Markdown.
 
+| Web reader                                        | Terminal reader                                        |
+| ------------------------------------------------- | ------------------------------------------------------ |
+| ![Kendai Web reader](doc/assets/kendai-web-1.png) | ![Kendai terminal reader](doc/assets/kendai-tui-1.png) |
+
 > Currently tested only on macOS. Windows and Linux remain unverified. Contributors who can help test on these platforms are welcome! Please share your results through [GitHub Issues](https://github.com/karad/kendai-md/issues).
 
 kendai-md is a simple, local Markdown viewer. Point it at files or directories to open your project's documentation in the browser, check what you need, and get back to work.
